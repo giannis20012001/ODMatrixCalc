@@ -8,7 +8,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 /**
- * Created by apostolos on 3/7/2016.
+ * Created by lumi (A.K.A. John Tsantilis) on 3/7/2016.
  */
 public class Result implements DBWritable {
     @Override

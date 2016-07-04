@@ -20,6 +20,10 @@ import org.lumi.odmatrixcalc.util.Tuple;
 
 import java.io.IOException;
 
+/**
+ * Created by lumi (A.K.A. John Tsantilis) on 4/6/2016.
+ */
+
 public class ThirdMapReduce extends Configured implements Tool {
 
     public static class MyMapper extends Mapper<Tuple, ID, Tuple, ID> {
@@ -57,7 +61,7 @@ public class ThirdMapReduce extends Configured implements Tool {
 
         DBConfiguration.configureDB(conf,
                 "com.mysql.jdbc.Driver",   // driver class
-                "jdbc:mysql://localhost:3306/testDb?autoReconnect=true&useSSL=false", // db url
+                "jdbc:mysql://192.168.3.103:3306/testDb?autoReconnect=true&useSSL=false", // db url
                 "mlk",    // user name
                 "1q2w3e"); //password
 

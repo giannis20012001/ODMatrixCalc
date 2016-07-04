@@ -11,7 +11,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
- * Created by John Tsantilis (A.K.A lumi) on 11/3/2016.
+ * Created by lumi (A.K.A. John Tsantilis) on 11/3/2016.
  */
 
 public class MinMax implements Writable, DBWritable {

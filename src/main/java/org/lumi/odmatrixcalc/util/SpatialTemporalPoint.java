@@ -1,15 +1,15 @@
 package org.lumi.odmatrixcalc.util;
 
-/**
- * Created by lumi (A.K.A. John Tsantilis) on 4/6/2016.
- */
-
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
+/**
+ * Created by lumi (A.K.A. John Tsantilis) on 4/6/2016.
+ */
 
 public class SpatialTemporalPoint implements FullWritable<SpatialTemporalPoint> {
 
