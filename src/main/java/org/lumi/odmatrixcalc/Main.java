@@ -92,8 +92,8 @@ public class Main {
 
     private static int trajectoryoriented(String[] args, Configuration conf, int returnCode, int numberOfCells) throws Exception {
         //First phase
-       /* System.out.println("Initializing first phase");
-        returnCode = ToolRunner.run(conf, new DBInputCreator(), args);*/
+        System.out.println("Initializing first phase");
+        returnCode = ToolRunner.run(conf, new DBInputCreator(), args);
         if (returnCode == 0) {
             //Second phase
             System.out.println("The Database Input Creator phase is done.");
