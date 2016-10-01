@@ -50,12 +50,25 @@ public class SpatialTemporalPoint implements FullWritable<SpatialTemporalPoint> 
         return this.x == that.x && this.y == that.y && this.t == that.t;
     }
 
+    @Override
+    public String toString() {
+        return "SpatialTemporalPoint{" +
+                "x=" + x +
+                ", y=" + y +
+                ", t=" + t +
+                '}';
+    }
+
+    /**
+     * Constructor
+     */
     public SpatialTemporalPoint(double x, double y, long t) {
         this.x = x;
         this.y = y;
         this.t = t;
     }
 
+    //Setters & Getters
     public double getX() {
         return x;
     }
@@ -81,16 +94,6 @@ public class SpatialTemporalPoint implements FullWritable<SpatialTemporalPoint> 
     }
 
     private double x;
-
-    @Override
-    public String toString() {
-        return "SpatialTemporalPoint{" +
-                "x=" + x +
-                ", y=" + y +
-                ", t=" + t +
-                '}';
-    }
-
     private double y;
     private long t;
 }
