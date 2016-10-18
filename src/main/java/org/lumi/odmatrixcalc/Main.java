@@ -17,6 +17,8 @@ public class Main {
         Configuration conf = new Configuration();
         int returnCode = 0;
         int numberOfCells = 8;
+        long start;
+        double elapsedTimeInSec;
         Scanner scanner = new Scanner(System.in);
 
         System.out.print("Enter choice (1-CellOriented, 2-TrajectoryOriented): ");
@@ -26,14 +28,21 @@ public class Main {
                 System.out.println("Executting CellOriented solution");
                 System.out.printf("Enter number of cells to set precision (default 8): ");
                 numberOfCells = Integer.parseInt(scanner.nextLine()); //TODO: Enetr evaluation for blank entry.
+                start = System.nanoTime(); // requires java 1.5
                 returnCode = celloriented(args, conf, returnCode, numberOfCells);
+                // Segment to monitor
+                elapsedTimeInSec = (System.nanoTime() - start) * 1.0e-9;
+                System.out.printf("Totatl execution time: %f\n", elapsedTimeInSec);
                 break;
 
             case 2:
                 System.out.println("Executting TrajectoryOriented solution");
                 System.out.printf("Enter number of cells to set precision (default 8): ");
                 numberOfCells = Integer.parseInt(scanner.nextLine()); //TODO: Enetr evaluation for blank entry.
+                start = System.nanoTime(); // requires java 1.5
                 returnCode = trajectoryoriented(args, conf, returnCode, numberOfCells);
+                elapsedTimeInSec = (System.nanoTime() - start) * 1.0e-9;
+                System.out.printf("Totatl execution time: %f\n", elapsedTimeInSec);
                 break;
 
             default:
@@ -49,7 +58,7 @@ public class Main {
     private static int celloriented(String[] args, Configuration conf, int returnCode, int numberOfCells) throws Exception {
         //First phase
         System.out.println("Initializing first phase");
-        returnCode = ToolRunner.run(conf, new DBInputCreator(), args);
+        //returnCode = ToolRunner.run(conf, new DBInputCreator(), args);
         if (returnCode == 0) {
             //Second phase
             System.out.println("The Database Input Creator phase is done.");

@@ -96,13 +96,13 @@ public class FirstMapReduce extends Configured implements Tool {
 
 
                 /*Debugging Code*/
-                System.err.println("<-------------START------------->");
+                /*System.err.println("<-------------START------------->");
                 System.err.println("CellId, TrajID: " + cellId + "," + cellAndTrajId.get(1).getId());
                 for (SpatialTemporalPoint point : points) {
                     System.err.println(point);
                 }
                 System.err.println("<--------------END-------------->");
-                System.err.println();
+                System.err.println();*/
                 /****************/
 
                 context.write(cellId, traIdAndPoints);
@@ -127,9 +127,9 @@ public class FirstMapReduce extends Configured implements Tool {
 
         DBConfiguration.configureDB(conf,
                 "com.mysql.jdbc.Driver",   // driver class
-                "jdbc:mysql://192.168.3.103:3306/testDb?autoReconnect=true&useSSL=false", // db url
+                "jdbc:mysql://localhost:3306/testDb?autoReconnect=true&useSSL=false", // db url
                 "mlk",    // user name
-                "1q2w3e"); //password
+                "!1q2w3e!"); //password
 
         //Do not use "final Job job = Job.getInstance(conf, "Database Creator")"
         Job job = new Job(conf, "Cell Oriented Approach MR1");

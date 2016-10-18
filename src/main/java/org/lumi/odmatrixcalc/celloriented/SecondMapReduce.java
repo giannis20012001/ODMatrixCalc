@@ -74,11 +74,11 @@ public class SecondMapReduce extends Configured implements Tool {
                     cellOCellDAndJC.add(new SerializableComparableWrapper<>(Result.JobCodes.PREVIOUS_NEXT_JOB.name()));
 
                     /************Debugging Code****************/
-                    System.err.println("<-------------START------------->");
+                    /*System.err.println("<-------------START------------->");
                     System.err.println("JobCode: START_END_JOB");
                     System.err.println("CellIdO -> CellIdD, trajId: " + cellOCellDAndJC.get(0).getObject() + "-> " + cellOCellDAndJC.get(1).getObject() + "," + trajId);
                     System.err.println("<--------------END-------------->");
-                    System.err.println();
+                    System.err.println();*/
                     /*****************************************/
 
 
@@ -95,11 +95,11 @@ public class SecondMapReduce extends Configured implements Tool {
                 cellOCellDAndJC.add(new SerializableComparableWrapper<>(Result.JobCodes.START_END_JOB.name()));
 
                 /************Debugging Code****************/
-                System.err.println("<-------------START------------->");
+                /*System.err.println("<-------------START------------->");
                 System.err.println("JobCode: PREVIOUS_NEXT_JOB");
                 System.err.println("CellIdO -> CellIdD, trajId: " + cellOCellDAndJC.get(0).getObject() + "-> " + cellOCellDAndJC.get(1).getObject() + "," + trajId);
                 System.err.println("<--------------END-------------->");
-                System.err.println();
+                System.err.println();*/
                 /*****************************************/
 
                 context.write(cellOCellDAndJC, trajId);

@@ -61,9 +61,9 @@ public class ThirdMapReduce extends Configured implements Tool {
 
         DBConfiguration.configureDB(conf,
                 "com.mysql.jdbc.Driver",   // driver class
-                "jdbc:mysql://192.168.3.103:3306/testDb?autoReconnect=true&useSSL=false", // db url
+                "jdbc:mysql://localhost:3306/testDb?autoReconnect=true&useSSL=false", // db url
                 "mlk",    // user name
-                "1q2w3e"); //password
+                "!1q2w3e!"); //password
 
         job.setJarByClass(ThirdMapReduce.class);
         job.setMapperClass(MyMapper.class);
