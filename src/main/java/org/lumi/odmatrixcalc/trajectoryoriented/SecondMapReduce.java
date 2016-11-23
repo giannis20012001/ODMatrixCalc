@@ -35,6 +35,7 @@ public class SecondMapReduce extends Configured implements Tool {
         }
     }
 
+    @SuppressWarnings("Duplicates")
     public static class MyReducer extends Reducer<Tuple, ID, Result, NullWritable> {
 
         @Override
