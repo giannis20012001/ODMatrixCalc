@@ -10,8 +10,6 @@ import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.mapreduce.lib.db.DBConfiguration;
 import org.apache.hadoop.mapreduce.lib.db.DBOutputFormat;
 import org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat;
-import org.apache.hadoop.mapreduce.lib.output.NullOutputFormat;
-import org.apache.hadoop.mapreduce.lib.output.SequenceFileOutputFormat;
 import org.apache.hadoop.util.Tool;
 import org.lumi.odmatrixcalc.util.ID;
 import org.lumi.odmatrixcalc.util.Result;
@@ -19,22 +17,43 @@ import org.lumi.odmatrixcalc.util.SerializableComparableWrapper;
 import org.lumi.odmatrixcalc.util.Tuple;
 
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by lumi (A.K.A. John Tsantilis) on 4/6/2016.
  */
 
 public class ThirdMapReduce extends Configured implements Tool {
-
     public static class MyMapper extends Mapper<Tuple, ID, Tuple, ID> {
+        @Override
+        protected void setup(Mapper.Context context) throws IOException, InterruptedException {
+            time=System.currentTimeMillis();
+
+        }
 
         @Override
         public void map(final Tuple cellOCellDAndJC, final ID trajId, final Mapper.Context context) throws IOException, InterruptedException {
             context.write(cellOCellDAndJC, trajId);
+
         }
+
+        @Override
+        public void cleanup(Mapper.Context context) throws IOException, InterruptedException{
+            end=System.currentTimeMillis();
+            time = end - time;
+            System.out.println("Map() took " + TimeUnit.MILLISECONDS.toSeconds(time) + " sec.");
+
+        }
+
     }
 
+    @SuppressWarnings("Duplicates")
     public static class MyReducer extends Reducer<Tuple, ID, Result, NullWritable> {
+        @Override
+        protected void setup(Reducer.Context context) throws IOException, InterruptedException {
+            time=System.currentTimeMillis();
+
+        }
 
         @Override
         public void reduce(Tuple cellOCellDAndJC, Iterable<ID> trajIds, Context context) throws IOException, InterruptedException {
@@ -51,7 +70,17 @@ public class ThirdMapReduce extends Configured implements Tool {
             result.setTrajIds(trajIdList);
             result.setJobCode(Result.JobCodes.valueOf(((SerializableComparableWrapper<String>) cellOCellDAndJC.get(2)).getObject()));
             context.write(result, NullWritable.get());
+
         }
+
+        @Override
+        public void cleanup(Reducer.Context context) throws IOException, InterruptedException{
+            end=System.currentTimeMillis();
+            time = end - time;
+            System.out.println("Reduce() took " + TimeUnit.MILLISECONDS.toSeconds(time) + " sec.");
+
+        }
+
     }
 
     @Override
@@ -61,7 +90,7 @@ public class ThirdMapReduce extends Configured implements Tool {
 
         DBConfiguration.configureDB(conf,
                 "com.mysql.jdbc.Driver",   // driver class
-                "jdbc:mysql://localhost:3306/testDb?autoReconnect=true&useSSL=false", // db url
+                "jdbc:mysql://192.168.100.100:3306/testDb?autoReconnect=true&useSSL=false", // db url
                 "mlk",    // user name
                 "!1q2w3e!"); //password
 
@@ -85,5 +114,8 @@ public class ThirdMapReduce extends Configured implements Tool {
         return job.waitForCompletion(true) ? 0 : 1;
 
     }
+
+    static long time;
+    static long end;
 
 }

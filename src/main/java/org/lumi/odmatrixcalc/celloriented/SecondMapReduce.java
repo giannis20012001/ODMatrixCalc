@@ -3,29 +3,32 @@ package org.lumi.odmatrixcalc.celloriented;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Reducer;
-import org.apache.hadoop.mapreduce.lib.db.DBConfiguration;
 import org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.SequenceFileOutputFormat;
 import org.apache.hadoop.util.Tool;
 import org.lumi.odmatrixcalc.util.*;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by lumi (A.K.A. John Tsantilis) on 4/6/2016.
  */
 
 public class SecondMapReduce extends Configured implements Tool {
-
     public static class MyMapper extends Mapper<ID, Tuple, ID, Tuple> {
+        @Override
+        protected void setup(Mapper.Context context) throws IOException, InterruptedException {
+            time=System.currentTimeMillis();
+
+        }
+
         @Override
         public void map(final ID cellId, final Tuple trajIdAndPoints, final Mapper.Context context) throws IOException, InterruptedException {
             ID trajId = ((SerializableWrapper<ID>) trajIdAndPoints.get(0)).getObject();
@@ -33,10 +36,25 @@ public class SecondMapReduce extends Configured implements Tool {
             cellIdAndPoints.add(new SerializableWrapper<ID>(cellId));
             cellIdAndPoints.add((SerializableWrapper<SpatialTemporalPoint>) trajIdAndPoints.get(1));
             context.write(trajId, cellIdAndPoints);
+
         }
+
+        @Override
+        public void cleanup(Mapper.Context context) throws IOException, InterruptedException{
+            end=System.currentTimeMillis();
+            time = end - time;
+            System.out.println("Map() took " + TimeUnit.MILLISECONDS.toSeconds(time) + " sec.");
+
+        }
+
     }
 
     public static class MyReducer extends Reducer<ID, Tuple, Tuple, ID> {
+        @Override
+        protected void setup(Reducer.Context context) throws IOException, InterruptedException {
+            time=System.currentTimeMillis();
+
+        }
 
         @Override
         public void reduce(ID trajId, Iterable<Tuple> tuples, Context context) throws IOException, InterruptedException {
@@ -83,7 +101,9 @@ public class SecondMapReduce extends Configured implements Tool {
 
 
                     context.write(cellOCellDAndJC, trajId);
+
                 }
+
             }
 
             if (list.size() > 1) {
@@ -103,8 +123,19 @@ public class SecondMapReduce extends Configured implements Tool {
                 /*****************************************/
 
                 context.write(cellOCellDAndJC, trajId);
+
             }
+
         }
+
+        @Override
+        public void cleanup(Reducer.Context context) throws IOException, InterruptedException{
+            end=System.currentTimeMillis();
+            time = end - time;
+            System.out.println("Reduce() took " + TimeUnit.MILLISECONDS.toSeconds(time) + " sec.");
+
+        }
+
     }
 
     @Override
@@ -128,4 +159,8 @@ public class SecondMapReduce extends Configured implements Tool {
         return job.waitForCompletion(true) ? 0 : 1;
 
     }
+
+    static long time;
+    static long end;
+
 }

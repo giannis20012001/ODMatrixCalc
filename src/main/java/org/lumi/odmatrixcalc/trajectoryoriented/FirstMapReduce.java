@@ -7,6 +7,8 @@ import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Reducer;
+import org.apache.hadoop.mapreduce.TaskReport;
+import org.apache.hadoop.mapreduce.TaskType;
 import org.apache.hadoop.mapreduce.lib.db.DBConfiguration;
 import org.apache.hadoop.mapreduce.lib.db.DBInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.SequenceFileOutputFormat;
@@ -16,16 +18,14 @@ import org.lumi.odmatrixcalc.util.*;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by lumi (A.K.A. John Tsantilis) on 2/7/2016.
  */
 
 public class FirstMapReduce extends Configured implements Tool {
-
     public static class MyMapper extends Mapper<LongWritable, DBInputTableRecord, ID, Tuple> {
-        private SpatialTemporalGrid grid;
-
         @Override
         protected void setup(Context context) throws IOException, InterruptedException {
             Configuration conf = context.getConfiguration();
@@ -38,6 +38,9 @@ public class FirstMapReduce extends Configured implements Tool {
                     Long.valueOf(conf.get("minT")),
                     Long.valueOf(conf.get("maxT"))
             );
+
+            time=System.currentTimeMillis();
+
         }
 
         @Override
@@ -54,9 +57,26 @@ public class FirstMapReduce extends Configured implements Tool {
             context.write(new ID<>(trajIdAsTuple), cellIdIdAndPoint);
 
         }
+
+        @Override
+        public void cleanup(Mapper.Context context) throws IOException, InterruptedException{
+            end=System.currentTimeMillis();
+            time = end - time;
+            System.out.println("Map() took " + TimeUnit.MILLISECONDS.toSeconds(time) + " sec.");
+
+        }
+
+        private SpatialTemporalGrid grid;
+
     }
 
     public static class MyReducer extends Reducer<ID, Tuple, Tuple, ID> {
+        @Override
+        protected void setup(Reducer.Context context) throws IOException, InterruptedException {
+            time=System.currentTimeMillis();
+
+        }
+
         @Override
         public void reduce(ID trajId, Iterable<Tuple> tuples, Context context) throws IOException, InterruptedException {
             ArrayList<Tuple> list = new ArrayList<>();
@@ -78,7 +98,9 @@ public class FirstMapReduce extends Configured implements Tool {
                     Long t1 = ((Wrapper<Long>) ((Tuple<Wrapper>) o1).get(0)).getObject();
                     Long t2 = ((Wrapper<Long>) ((Tuple<Wrapper>) o2).get(0)).getObject();
                     return (int) (t1 - t2);
+
                 }
+
             });
 
             //What to do if we have only one cell ?
@@ -92,16 +114,18 @@ public class FirstMapReduce extends Configured implements Tool {
                     cellOCellDAndJC.add(new SerializableComparableWrapper<>(Result.JobCodes.PREVIOUS_NEXT_JOB.name()));
 
                     /************Debugging Code****************/
-                    System.err.println("<-------------START------------->");
+                    /*System.err.println("<-------------START------------->");
                     System.err.println("JobCode: START_END_JOB");
                     System.err.println("CellIdO -> CellIdD, trajId: " + cellOCellDAndJC.get(0).getObject() + "-> " + cellOCellDAndJC.get(1).getObject() + "," + trajId);
                     System.err.println("<--------------END-------------->");
-                    System.err.println();
+                    System.err.println();*/
                     /*****************************************/
 
 
                     context.write(cellOCellDAndJC, trajId);
+
                 }
+
             }
 
             if (list.size() > 1) {
@@ -121,8 +145,19 @@ public class FirstMapReduce extends Configured implements Tool {
                 /*****************************************/
 
                 context.write(cellOCellDAndJC, trajId);
+
             }
+
         }
+
+        @Override
+        public void cleanup(Reducer.Context context) throws IOException, InterruptedException{
+            end=System.currentTimeMillis();
+            time = end - time;
+            System.out.println("Reduce() took " + TimeUnit.MILLISECONDS.toSeconds(time) + " sec.");
+
+        }
+
     }
 
     @Override
@@ -141,7 +176,7 @@ public class FirstMapReduce extends Configured implements Tool {
 
         DBConfiguration.configureDB(conf,
                 "com.mysql.jdbc.Driver",   // driver class
-                "jdbc:mysql://localhost:3306/testDb?autoReconnect=true&useSSL=false", // db url
+                "jdbc:mysql://192.168.100.100:3306/testDb?autoReconnect=true&useSSL=false", // db url
                 "mlk",    // user name
                 "!1q2w3e!"); //password
 
@@ -169,6 +204,27 @@ public class FirstMapReduce extends Configured implements Tool {
         //Here we can put HDFS notation in order to use the distributed FS provided by Hadoop
         SequenceFileOutputFormat.setOutputPath(job, new Path(System.getProperty("user.dir") + "/output/trajectoryoriented/fmr")); //set via args
 
-        return job.waitForCompletion(true) ? 0 : 1;
+        int completion = job.waitForCompletion(true) ? 0 : 1;
+        //Find time completion for map() & reduce() part
+        TaskReport[] mapReports = job.getTaskReports(TaskType.MAP);
+        for(TaskReport report : mapReports) {
+            long time = report.getFinishTime() - report.getStartTime();
+            System.out.println(report.getTaskId() + " map() took " + TimeUnit.MILLISECONDS.toSeconds(time) + " sec!");
+
+        }
+
+        TaskReport[] reduceReports = job.getTaskReports(TaskType.REDUCE);
+        for(TaskReport report : reduceReports) {
+            long time = report.getFinishTime() - report.getStartTime();
+            System.out.println(report.getTaskId() + " reduce() took " + TimeUnit.MILLISECONDS.toSeconds(time) + " sec");
+
+        }
+
+        return completion;
+
     }
+
+    static long time;
+    static long end;
+
 }

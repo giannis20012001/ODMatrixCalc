@@ -7,6 +7,7 @@ import org.lumi.odmatrixcalc.initialization.MinMax;
 import org.lumi.odmatrixcalc.initialization.MinMaxFinder;
 
 import java.util.Scanner;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by lumi (A.K.A. John Tsantilis) on 10/1/2016.
@@ -16,34 +17,36 @@ public class Main {
     public static void main(String[] args) throws Exception {
         Configuration conf = new Configuration();
         int returnCode = 0;
-        int numberOfCells = 8;
-        long start;
+        int numberOfCells;
+        double start;
         double elapsedTimeInSec;
         Scanner scanner = new Scanner(System.in);
 
+        int cores = Runtime.getRuntime().availableProcessors();
+        System.out.printf("Available cores: %d\n\n", cores);
         System.out.print("Enter choice (1-CellOriented, 2-TrajectoryOriented): ");
         int choice = Integer.parseInt(scanner.nextLine());
         switch (choice) {
             case 1:
                 System.out.println("Executting CellOriented solution");
                 System.out.printf("Enter number of cells to set precision (default 8): ");
-                numberOfCells = Integer.parseInt(scanner.nextLine()); //TODO: Enetr evaluation for blank entry.
-                start = System.nanoTime(); // requires java 1.5
+                numberOfCells = Integer.parseInt(scanner.nextLine()); //TODO: Enter evaluation for blank entry.
+                start = System.currentTimeMillis();
                 returnCode = celloriented(args, conf, returnCode, numberOfCells);
                 // Segment to monitor
-                elapsedTimeInSec = (System.nanoTime() - start) * 1.0e-9;
-                System.out.printf("Totatl execution time: %f sec\n", elapsedTimeInSec);
+                elapsedTimeInSec = (System.currentTimeMillis() - start);
+                System.out.printf("Totatl execution time: %d sec\n", TimeUnit.MILLISECONDS.toSeconds((long) elapsedTimeInSec));
                 break;
 
             case 2:
                 System.out.println("Executting TrajectoryOriented solution");
                 System.out.printf("Enter number of cells to set precision (default 8): ");
-                numberOfCells = Integer.parseInt(scanner.nextLine()); //TODO: Enetr evaluation for blank entry.
-                start = System.nanoTime(); // requires java 1.5
+                numberOfCells = Integer.parseInt(scanner.nextLine()); //TODO: Enter evaluation for blank entry.
+                start = System.currentTimeMillis();
                 returnCode = trajectoryoriented(args, conf, returnCode, numberOfCells);
                 // Segment to monitor
-                elapsedTimeInSec = (System.nanoTime() - start) * 1.0e-9;
-                System.out.printf("Totatl execution time: %f sec\n", elapsedTimeInSec);
+                elapsedTimeInSec = (System.currentTimeMillis() - start);
+                System.out.printf("Totatl execution time: %d sec\n", TimeUnit.MILLISECONDS.toSeconds((long) elapsedTimeInSec));
                 break;
 
             default:
@@ -87,8 +90,9 @@ public class Main {
                 if (returnCode == 0) {
                     //Fifth phase
                     System.out.println("The SecondMapReduce phase is done.");
-                    System.out.println("Initializing fourth phase.");
+                    System.out.println("Initializing fifth phase.");
                     returnCode = ToolRunner.run(conf, new org.lumi.odmatrixcalc.celloriented.ThirdMapReduce(), args);
+                    System.out.println("The ThirdMapReduce phase is done.");
 
                 }
 
@@ -128,6 +132,7 @@ public class Main {
                 System.out.println("The FisrtMapReduce phase is done.");
                 System.out.println("Initializing fourth phase.");
                 returnCode = ToolRunner.run(conf, new org.lumi.odmatrixcalc.trajectoryoriented.SecondMapReduce(), args); //args or myArgs ?
+                System.out.println("The SecondMapReduce phase is done.");
 
             }
 
