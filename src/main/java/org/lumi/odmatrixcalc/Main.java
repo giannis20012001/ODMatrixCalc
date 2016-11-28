@@ -18,8 +18,8 @@ public class Main {
         Configuration conf = new Configuration();
         int returnCode = 0;
         int numberOfCells;
-        double start;
-        double elapsedTimeInSec;
+        long start;
+        long elapsedTimeInSec;
         Scanner scanner = new Scanner(System.in);
 
         int cores = Runtime.getRuntime().availableProcessors();
@@ -35,7 +35,7 @@ public class Main {
                 returnCode = celloriented(args, conf, returnCode, numberOfCells);
                 // Segment to monitor
                 elapsedTimeInSec = (System.currentTimeMillis() - start);
-                System.out.printf("Totatl execution time: %f milliseconds\n", elapsedTimeInSec);
+                System.out.printf("Totatl execution time: %d milliseconds\n", elapsedTimeInSec);
                 break;
 
             case 2:
@@ -46,7 +46,7 @@ public class Main {
                 returnCode = trajectoryoriented(args, conf, returnCode, numberOfCells);
                 // Segment to monitor
                 elapsedTimeInSec = (System.currentTimeMillis() - start);
-                System.out.printf("Totatl execution time: %s milliseconds\n", elapsedTimeInSec);
+                System.out.printf("Totatl execution time: %d milliseconds\n", elapsedTimeInSec);
                 break;
 
             default:

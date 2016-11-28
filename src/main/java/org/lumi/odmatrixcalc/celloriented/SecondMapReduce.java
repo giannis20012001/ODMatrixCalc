@@ -15,7 +15,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Created by lumi (A.K.A. John Tsantilis) on 4/6/2016.
@@ -158,7 +157,7 @@ public class SecondMapReduce extends Configured implements Tool {
 
     }
 
-    static double SecondMRStartTime;
-    static double SecondMRElapsedTimeInSec;
+    static long SecondMRStartTime;
+    static long SecondMRElapsedTimeInSec;
 
 }

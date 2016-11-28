@@ -17,7 +17,6 @@ import org.lumi.odmatrixcalc.util.SerializableComparableWrapper;
 import org.lumi.odmatrixcalc.util.Tuple;
 
 import java.io.IOException;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Created by lumi (A.K.A. John Tsantilis) on 4/6/2016.
@@ -113,7 +112,7 @@ public class ThirdMapReduce extends Configured implements Tool {
 
     }
 
-    static double ThirdMRStartTime;
-    static double ThirdMRElapsedTimeInSec;
+    static long ThirdMRStartTime;
+    static long ThirdMRElapsedTimeInSec;
 
 }

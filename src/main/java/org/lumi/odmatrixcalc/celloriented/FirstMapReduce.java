@@ -25,7 +25,6 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Created by lumi (A.K.A. John Tsantilis) on 4/6/2016.
@@ -137,6 +136,7 @@ public class FirstMapReduce extends Configured implements Tool {
         @Override
         public void cleanup(Reducer.Context context) throws IOException, InterruptedException{
             FirstMRElapsedTimeInSec = (System.currentTimeMillis() - FirstMRStartTime);
+            //System.out.println("Map() took " + TimeUnit.MILLISECONDS.toSeconds(FirstMRElapsedTimeInSec) + " sec.");
             System.out.println("Reduce() took " + FirstMRElapsedTimeInSec + " milliseconds.");
 
         }
@@ -188,7 +188,7 @@ public class FirstMapReduce extends Configured implements Tool {
 
     }
 
-    static double FirstMRStartTime;
-    static double FirstMRElapsedTimeInSec;
+    static long FirstMRStartTime;
+    static long FirstMRElapsedTimeInSec;
 
 }

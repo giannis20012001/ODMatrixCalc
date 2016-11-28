@@ -7,8 +7,6 @@ import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Reducer;
-import org.apache.hadoop.mapreduce.TaskReport;
-import org.apache.hadoop.mapreduce.TaskType;
 import org.apache.hadoop.mapreduce.lib.db.DBConfiguration;
 import org.apache.hadoop.mapreduce.lib.db.DBInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.SequenceFileOutputFormat;
@@ -18,7 +16,6 @@ import org.lumi.odmatrixcalc.util.*;
 
 import java.io.IOException;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Created by lumi (A.K.A. John Tsantilis) on 2/7/2016.
@@ -61,7 +58,7 @@ public class FirstMapReduce extends Configured implements Tool {
         @Override
         public void cleanup(Mapper.Context context) throws IOException, InterruptedException{
             FirstMRElapsedTimeInSec = (System.currentTimeMillis() - FirstMRStartTime);
-            System.out.println("Map() took " + TimeUnit.MILLISECONDS.toSeconds(FirstMRElapsedTimeInSec) + " sec.");
+            System.out.println("Map() took " + FirstMRElapsedTimeInSec + " milliseconds.");
 
         }
 
@@ -152,7 +149,7 @@ public class FirstMapReduce extends Configured implements Tool {
         @Override
         public void cleanup(Reducer.Context context) throws IOException, InterruptedException{
             FirstMRElapsedTimeInSec = (System.currentTimeMillis() - FirstMRStartTime);
-            System.out.println("Map() took " + TimeUnit.MILLISECONDS.toSeconds(FirstMRElapsedTimeInSec) + " sec.");
+            System.out.println("Map() took " + FirstMRElapsedTimeInSec + " milliseconds.");
 
         }
 
@@ -202,23 +199,7 @@ public class FirstMapReduce extends Configured implements Tool {
         //Here we can put HDFS notation in order to use the distributed FS provided by Hadoop
         SequenceFileOutputFormat.setOutputPath(job, new Path(System.getProperty("user.dir") + "/output/trajectoryoriented/fmr")); //set via args
 
-        int completion = job.waitForCompletion(true) ? 0 : 1;
-        //Find time completion for map() & reduce() part
-        TaskReport[] mapReports = job.getTaskReports(TaskType.MAP);
-        for(TaskReport report : mapReports) {
-            long time = report.getFinishTime() - report.getStartTime();
-            System.out.println(report.getTaskId() + " map() took " + TimeUnit.MILLISECONDS.toSeconds(time) + " sec!");
-
-        }
-
-        TaskReport[] reduceReports = job.getTaskReports(TaskType.REDUCE);
-        for(TaskReport report : reduceReports) {
-            long time = report.getFinishTime() - report.getStartTime();
-            System.out.println(report.getTaskId() + " reduce() took " + TimeUnit.MILLISECONDS.toSeconds(time) + " sec");
-
-        }
-
-        return completion;
+        return job.waitForCompletion(true) ? 0 : 1;
 
     }
 
