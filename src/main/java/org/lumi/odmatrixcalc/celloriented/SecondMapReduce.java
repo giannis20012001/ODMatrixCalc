@@ -25,7 +25,7 @@ public class SecondMapReduce extends Configured implements Tool {
     public static class MyMapper extends Mapper<ID, Tuple, ID, Tuple> {
         @Override
         protected void setup(Mapper.Context context) throws IOException, InterruptedException {
-            time=System.currentTimeMillis();
+            SecondMRStartTime = System.currentTimeMillis();
 
         }
 
@@ -41,9 +41,8 @@ public class SecondMapReduce extends Configured implements Tool {
 
         @Override
         public void cleanup(Mapper.Context context) throws IOException, InterruptedException{
-            end=System.currentTimeMillis();
-            time = end - time;
-            System.out.println("Map() took " + TimeUnit.MILLISECONDS.toSeconds(time) + " sec.");
+            SecondMRElapsedTimeInSec = (System.currentTimeMillis() - SecondMRStartTime);
+            System.out.println("Map() took " + SecondMRElapsedTimeInSec + " milliseconds.");
 
         }
 
@@ -52,7 +51,7 @@ public class SecondMapReduce extends Configured implements Tool {
     public static class MyReducer extends Reducer<ID, Tuple, Tuple, ID> {
         @Override
         protected void setup(Reducer.Context context) throws IOException, InterruptedException {
-            time=System.currentTimeMillis();
+            SecondMRStartTime=System.currentTimeMillis();
 
         }
 
@@ -130,9 +129,8 @@ public class SecondMapReduce extends Configured implements Tool {
 
         @Override
         public void cleanup(Reducer.Context context) throws IOException, InterruptedException{
-            end=System.currentTimeMillis();
-            time = end - time;
-            System.out.println("Reduce() took " + TimeUnit.MILLISECONDS.toSeconds(time) + " sec.");
+            SecondMRElapsedTimeInSec = (System.currentTimeMillis() - SecondMRStartTime);
+            System.out.println("Reduce() took " + SecondMRElapsedTimeInSec + " milliseconds.");
 
         }
 
@@ -160,7 +158,7 @@ public class SecondMapReduce extends Configured implements Tool {
 
     }
 
-    static long time;
-    static long end;
+    static double SecondMRStartTime;
+    static double SecondMRElapsedTimeInSec;
 
 }

@@ -27,7 +27,7 @@ public class ThirdMapReduce extends Configured implements Tool {
     public static class MyMapper extends Mapper<Tuple, ID, Tuple, ID> {
         @Override
         protected void setup(Mapper.Context context) throws IOException, InterruptedException {
-            time=System.currentTimeMillis();
+            ThirdMRStartTime = System.currentTimeMillis();
 
         }
 
@@ -39,9 +39,8 @@ public class ThirdMapReduce extends Configured implements Tool {
 
         @Override
         public void cleanup(Mapper.Context context) throws IOException, InterruptedException{
-            end=System.currentTimeMillis();
-            time = end - time;
-            System.out.println("Map() took " + TimeUnit.MILLISECONDS.toSeconds(time) + " sec.");
+            ThirdMRElapsedTimeInSec = (System.currentTimeMillis() - ThirdMRStartTime);
+            System.out.println("Map() took " + ThirdMRElapsedTimeInSec + " milliseconds.");
 
         }
 
@@ -51,7 +50,7 @@ public class ThirdMapReduce extends Configured implements Tool {
     public static class MyReducer extends Reducer<Tuple, ID, Result, NullWritable> {
         @Override
         protected void setup(Reducer.Context context) throws IOException, InterruptedException {
-            time=System.currentTimeMillis();
+            ThirdMRStartTime=System.currentTimeMillis();
 
         }
 
@@ -75,9 +74,8 @@ public class ThirdMapReduce extends Configured implements Tool {
 
         @Override
         public void cleanup(Reducer.Context context) throws IOException, InterruptedException{
-            end=System.currentTimeMillis();
-            time = end - time;
-            System.out.println("Reduce() took " + TimeUnit.MILLISECONDS.toSeconds(time) + " sec.");
+            ThirdMRElapsedTimeInSec = (System.currentTimeMillis() - ThirdMRStartTime);
+            System.out.println("Reduce() took " + ThirdMRElapsedTimeInSec + " milliseconds.");
 
         }
 
@@ -115,7 +113,7 @@ public class ThirdMapReduce extends Configured implements Tool {
 
     }
 
-    static long time;
-    static long end;
+    static double ThirdMRStartTime;
+    static double ThirdMRElapsedTimeInSec;
 
 }

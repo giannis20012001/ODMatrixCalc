@@ -35,7 +35,7 @@ public class Main {
                 returnCode = celloriented(args, conf, returnCode, numberOfCells);
                 // Segment to monitor
                 elapsedTimeInSec = (System.currentTimeMillis() - start);
-                System.out.printf("Totatl execution time: %d sec\n", TimeUnit.MILLISECONDS.toSeconds((long) elapsedTimeInSec));
+                System.out.printf("Totatl execution time: %f milliseconds\n", elapsedTimeInSec);
                 break;
 
             case 2:
@@ -46,7 +46,7 @@ public class Main {
                 returnCode = trajectoryoriented(args, conf, returnCode, numberOfCells);
                 // Segment to monitor
                 elapsedTimeInSec = (System.currentTimeMillis() - start);
-                System.out.printf("Totatl execution time: %d sec\n", TimeUnit.MILLISECONDS.toSeconds((long) elapsedTimeInSec));
+                System.out.printf("Totatl execution time: %s milliseconds\n", elapsedTimeInSec);
                 break;
 
             default:

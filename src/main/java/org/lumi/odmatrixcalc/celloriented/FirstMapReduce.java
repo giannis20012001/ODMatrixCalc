@@ -46,7 +46,7 @@ public class FirstMapReduce extends Configured implements Tool {
                     Long.valueOf(conf.get("maxT"))
             );
 
-            time=System.currentTimeMillis();
+            FirstMRStartTime = System.currentTimeMillis();
 
         }
 
@@ -67,9 +67,8 @@ public class FirstMapReduce extends Configured implements Tool {
 
         @Override
         public void cleanup(Mapper.Context context) throws IOException, InterruptedException{
-            end=System.currentTimeMillis();
-            time = end - time;
-            System.out.println("Map() took " + TimeUnit.MILLISECONDS.toSeconds(time) + " sec.");
+            FirstMRElapsedTimeInSec = (System.currentTimeMillis() - FirstMRStartTime);
+            System.out.println("Map() took " + FirstMRElapsedTimeInSec + " milliseconds.");
 
         }
 
@@ -80,7 +79,7 @@ public class FirstMapReduce extends Configured implements Tool {
     public static class MyReducer extends Reducer<ID, Tuple, ID, Tuple> {
         @Override
         protected void setup(Reducer.Context context) throws IOException, InterruptedException {
-            time=System.currentTimeMillis();
+            FirstMRStartTime = System.currentTimeMillis();
 
         }
 
@@ -137,9 +136,8 @@ public class FirstMapReduce extends Configured implements Tool {
 
         @Override
         public void cleanup(Reducer.Context context) throws IOException, InterruptedException{
-            end=System.currentTimeMillis();
-            time = end - time;
-            System.out.println("Reduce() took " + TimeUnit.MILLISECONDS.toSeconds(time) + " sec.");
+            FirstMRElapsedTimeInSec = (System.currentTimeMillis() - FirstMRStartTime);
+            System.out.println("Reduce() took " + FirstMRElapsedTimeInSec + " milliseconds.");
 
         }
 
@@ -190,7 +188,7 @@ public class FirstMapReduce extends Configured implements Tool {
 
     }
 
-    static long time;
-    static long end;
+    static double FirstMRStartTime;
+    static double FirstMRElapsedTimeInSec;
 
 }
