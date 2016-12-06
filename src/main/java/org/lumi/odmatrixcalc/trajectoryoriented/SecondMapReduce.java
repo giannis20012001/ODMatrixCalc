@@ -75,7 +75,7 @@ public class SecondMapReduce extends Configured implements Tool {
         @Override
         public void cleanup(Reducer.Context context) throws IOException, InterruptedException{
             SecondMRElapsedTimeInSec = (System.currentTimeMillis() - SecondMRStartTime);
-            System.out.println("Map() took " + SecondMRElapsedTimeInSec + " milliseconds.");
+            System.out.println("Reduce() took " + SecondMRElapsedTimeInSec + " milliseconds.");
 
         }
 
@@ -84,11 +84,11 @@ public class SecondMapReduce extends Configured implements Tool {
     @Override
     public int run(final String[] args) throws Exception {
         Configuration conf = getConf();
-        Job job = new Job(conf, "Cell Oriented Approach MR3");
+        Job job = new Job(conf, "Trajectory Oriented Approach MR2");
 
         DBConfiguration.configureDB(conf,
                 "com.mysql.jdbc.Driver",   // driver class
-                "jdbc:mysql://192.168.100.100:3306/testDb?autoReconnect=true&useSSL=false", // db url
+                "jdbc:mysql://192.168.100.2:3306/testDb?autoReconnect=true&useSSL=false", // db url
                 "mlk",    // user name
                 "!1q2w3e!"); //password
 

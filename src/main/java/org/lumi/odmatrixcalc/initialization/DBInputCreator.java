@@ -58,7 +58,7 @@ public class DBInputCreator extends Configured implements Tool {
         Configuration conf = getConf();
         DBConfiguration.configureDB(conf,
                 "com.mysql.jdbc.Driver",   // driver class
-                "jdbc:mysql://192.168.100.100:3306/testDb?autoReconnect=true&useSSL=false", // db url
+                "jdbc:mysql://192.168.100.2:3306/testDb?autoReconnect=true&useSSL=false", // db url
                 "mlk",    // user name
                 "!1q2w3e!"); //password
         /*"jdbc:mysql://localhost:3306/testDb?autoReconnect=true&useSSL=false"*/
